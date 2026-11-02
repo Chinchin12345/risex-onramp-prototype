@@ -17,6 +17,9 @@ sync through `localStorage`, which needs both pages on the same origin.
 
 ## Deploy
 
+Live: https://chinchin12345.github.io/risex-onramp-prototype/ (GitHub Pages, repo `Chinchin12345/risex-onramp-prototype`).
+
+
 Upload this folder as-is to any static HTTPS host (GitHub Pages, Netlify, Cloudflare Pages…).
 `index.html` is the entry point; `toppay.html` must sit next to it.
 
