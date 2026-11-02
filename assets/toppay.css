@@ -1,0 +1,91 @@
+/* External provider tab (TopPay / ACB) — styled as in Figma frame 08 (90:11993). */
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; min-height: 100%; }
+body { background: #ffffff; color: #0c0e12; font: 400 12px/18px 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; min-width: 1000px; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; transition: background-color 120ms ease, color 120ms ease, transform 90ms ease, box-shadow 120ms ease, opacity 120ms ease; }
+button:not(:disabled):active { transform: scale(.97); }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid #1f4f7f; outline-offset: 2px; }
+h1, p { margin: 0; }
+img { display: block; }
+.flex1 { flex: 1 1 auto; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+i[data-icon] { display: inline-flex; flex: none; } i[data-icon] svg { width: 100%; height: 100%; }
+.i12 { width: 12px; height: 12px; } .i16 { width: 16px; height: 16px; }
+
+.demo-strip { position: sticky; top: 0; z-index: 5; height: 24px; display: flex; align-items: center; justify-content: center; background: #1b1d22; color: #fdd835; font: 500 11px/16px 'Geist Mono', ui-monospace, monospace; letter-spacing: .02em; }
+
+.page { width: 960px; min-height: calc(100vh - 24px); margin: 0 auto; padding: 8px 0 16px; display: flex; flex-direction: column; gap: 16px; background: linear-gradient(180deg, #bbefee 0%, #ddf0f8 100%); box-shadow: 0 0 12px rgba(0, 0, 0, .12); }
+.topbar { height: 30px; display: flex; align-items: center; padding: 0 12px; }
+.lang { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; line-height: 20px; color: #1f4f7f; padding: 0 2px; border-radius: 4px; }
+.lang:hover { background: rgba(31, 79, 127, .08); }
+
+.card { margin: 0 10px; background: #fff; border-radius: 8px; padding: 24px 12px 12px; display: flex; gap: 24px; animation: cardIn 260ms cubic-bezier(.2, .8, .2, 1); }
+@keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.card[hidden] { display: none; }
+.details { width: 448px; display: flex; flex-direction: column; }
+.bank-logo { height: 66px; display: flex; justify-content: center; padding: 8px 0 16px; }
+.fields { padding: 0 12px; }
+.field { height: 67px; padding: 8px 0 12px; border-bottom: 1px solid #d0ebda; display: flex; flex-direction: column; gap: 4px; }
+.f-label { color: #1f4f7f; }
+.f-row { height: 24px; display: flex; align-items: center; justify-content: space-between; }
+.f-row b { font-weight: 600; font-size: 14px; line-height: 20px; }
+.red { color: #ff4446; }
+.copy { min-width: 73px; height: 24px; padding: 0 12px; border-radius: 9999px; background: #14b6b6; color: #fff; font-weight: 600; font-size: 11px; line-height: 16px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; }
+.copy:hover { background: #10a2a2; }
+.copy:active { background: #0d8f8f; }
+.copy.is-done { background: #0f9d6b; }
+.note { margin-top: 1px; padding: 8px 12px; background: #eaf1ff; border-radius: 6px; display: flex; flex-direction: column; gap: 4px; font-size: 11px; line-height: 16px; color: #7a879a; }
+.note > b { font-weight: 600; color: #5b6b82; }
+.note .red { font-weight: 600; }
+
+.qr-col { width: 448px; display: flex; flex-direction: column; align-items: center; }
+.countdown { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 16px; line-height: 24px; font-variant-numeric: tabular-nums; }
+.digit { padding: 4px 8px; border-radius: 4px; background: #e5f0fa; }
+.qr { margin-top: 24px; width: 290px; height: 290px; }
+.qr img { width: 290px; height: 290px; }
+.qr-amount { margin-top: 24px; display: flex; align-items: baseline; gap: 6px; color: #ff4446; font-weight: 500; font-size: 24px; line-height: 32px; font-variant-numeric: tabular-nums; }
+.qr-amount small { font-size: 11px; line-height: 16px; font-weight: 400; }
+.download { width: 448px; height: 40px; border-radius: 6px; background: #14b6b6; color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 14px; line-height: 20px; text-decoration: none; position: relative; }
+.download:hover { background: #10a2a2; }
+.download:active { background: #0d8f8f; }
+.download.is-loading { pointer-events: none; }
+.download.is-loading > * { opacity: 0; }
+.download.is-loading::after, .demo-btn.is-loading::after { content: ""; position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; border: 2px solid #fff; border-right-color: transparent; animation: spin 700ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.secure { align-self: center; display: flex; align-items: center; gap: 6px; color: #1ab8b8; }
+
+.result-card { flex-direction: column; align-items: center; text-align: center; padding: 48px 24px 40px; gap: 12px; }
+.result-card h1 { font-weight: 600; font-size: 20px; line-height: 28px; color: #0c0e12; }
+.ok-ic { width: 56px; height: 56px; border-radius: 50%; background: #14b6b6; display: grid; place-items: center; animation: okPop 320ms cubic-bezier(.2, .8, .2, 1); }
+@keyframes okPop { 0% { transform: scale(.5); opacity: 0; } 70% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 1; } }
+.r-amount { color: #ff4446; font-weight: 500; font-size: 24px; line-height: 32px; font-variant-numeric: tabular-nums; }
+.r-amount small { font-size: 11px; font-weight: 400; }
+.r-meta { margin: 4px 0 0; display: grid; grid-template-columns: repeat(3, auto); gap: 24px; }
+.r-meta div { display: flex; flex-direction: column; gap: 2px; }
+.r-meta dt { color: #1f4f7f; }
+.r-meta dd { margin: 0; font-weight: 600; font-size: 14px; line-height: 20px; }
+.r-copy { max-width: 480px; color: #5b6b82; font-size: 14px; line-height: 20px; }
+.r-btn { width: 280px; margin-top: 8px; }
+
+.toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 8px); opacity: 0; padding: 8px 14px; border-radius: 9999px; background: #0c0e12; color: #fff; font-weight: 500; font-size: 12px; transition: opacity 180ms ease, transform 180ms ease; pointer-events: none; }
+.toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+/* prototype controls — styled apart from TopPay */
+.demo { position: fixed; right: 16px; bottom: 16px; z-index: 10; width: 264px; padding: 12px; border-radius: 10px; background: rgba(12, 14, 18, .92); border: 1px dashed rgba(255, 255, 255, .3); color: #c9cbcf; font: 500 11px/16px 'Geist Mono', ui-monospace, monospace; box-shadow: 0 8px 24px rgba(0, 0, 0, .25); }
+.demo-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+.demo-tag { color: #fdd835; letter-spacing: .06em; }
+.demo-btn { position: relative; width: 100%; height: 32px; border-radius: 6px; background: #fdd835; color: #0c0e12; font: 600 12px/18px 'Geist', sans-serif; }
+.demo-btn:hover { background: #ffe45c; }
+.demo-btn:disabled { background: rgba(255, 255, 255, .12); color: #85888e; cursor: not-allowed; transform: none; }
+.demo-btn.is-loading > * { opacity: 0; }
+.demo-btn.is-loading::after { border-color: #0c0e12; border-right-color: transparent; }
+.demo-note { margin: 8px 0 0; color: #94979c; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+  .download.is-loading::after, .demo-btn.is-loading::after { animation: spin 1.6s linear infinite !important; }
+  button:not(:disabled):active { transform: none; }
+}

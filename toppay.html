@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TopPay</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="assets/toppay.css">
+</head>
+<body>
+<div class="demo-strip" role="note">Prototype demo · not a real payment page · do not transfer money · QR is illustrative and not payable</div>
+
+<div class="page">
+  <div class="topbar">
+    <img src="assets/brand/brand-toppay.png" alt="TopPay" width="114" height="29">
+    <span class="flex1"></span>
+    <button class="lang" id="langBtn" aria-label="Ngôn ngữ: Tiếng Việt">VI<i data-icon="chevron-down" class="i12"></i></button>
+  </div>
+
+  <!-- Payment instructions (Figma 08 · 90:11993) -->
+  <section class="card" id="viewPay" aria-labelledby="payHeading">
+    <h1 class="vh" id="payHeading">Chuyển khoản ngân hàng</h1>
+    <div class="details">
+      <div class="bank-logo"><img src="assets/brand/brand-acb.png" alt="ACB" width="96" height="42"></div>
+      <div class="fields">
+        <div class="field"><span class="f-label">Ngân hàng thụ hưởng</span><div class="f-row"><b>Ngân hàng TMCP Á Châu</b></div></div>
+        <div class="field"><span class="f-label">Số tài khoản</span><div class="f-row"><b data-copy-src="account" id="vAccount"></b><button class="copy" data-copy="account">Sao chép</button></div></div>
+        <div class="field"><span class="f-label">Tên nhận</span><div class="f-row"><b id="vName"></b><button class="copy" data-copy="name">Sao chép</button></div></div>
+        <div class="field"><span class="f-label">Số tiền chuyển</span><div class="f-row"><b class="red" id="vAmount">2,580,313 VND</b><button class="copy" data-copy="amount">Sao chép</button></div></div>
+        <div class="field"><span class="f-label">Nội dung lời nhắn</span><div class="f-row"><b class="red" id="vMemo">A8K3T2GR</b><button class="copy" data-copy="memo">Sao chép</button></div></div>
+      </div>
+      <div class="note">
+        <b>Lưu ý:</b>
+        <span>1. MỘT mã QR chỉ được sử dụng cho MỘT giao dịch duy nhất.</span>
+        <span>2. Vui lòng nhập chính xác nội dung và số tiền yêu cầu từ hệ thống. Thông tin không chính xác sẽ không thể tự động lên điểm.</span>
+        <span>3. Vui lòng nhập mã: <b class="red" data-memo>A8K3T2GR</b> vào phần nội dung chuyển khoản.</span>
+      </div>
+    </div>
+    <div class="qr-col">
+      <div class="countdown" role="timer" aria-label="Thời gian còn lại"><span class="digit" id="hh">00</span><span class="colon">:</span><span class="digit" id="mm">15</span><span class="colon">:</span><span class="digit" id="ss">00</span></div>
+      <div class="qr" id="qr" role="img" aria-label="Mã QR minh hoạ — không dùng để thanh toán"><img src="assets/brand/qr.svg" alt="" width="290" height="290"></div>
+      <div class="qr-amount"><span id="qrAmount">2,580,313</span><small>VND</small></div>
+      <span class="flex1"></span>
+      <button class="download" id="dlBtn"><i data-icon="arrow-down-tray" class="i16"></i><span class="dl-label">Tải mã QR</span></button>
+    </div>
+  </section>
+
+  <!-- Payment success (prototype-only addition) -->
+  <section class="card result-card" id="viewPaid" hidden aria-live="polite">
+    <div class="ok-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h1>Thanh toán thành công</h1>
+    <p class="r-amount"><span id="paidAmount">2,580,313</span> <small>VND</small></p>
+    <dl class="r-meta"><div><dt>Ngân hàng</dt><dd>ACB</dd></div><div><dt>Nội dung</dt><dd data-memo>A8K3T2GR</dd></div><div><dt>Thời gian</dt><dd id="paidAt">—</dd></div></dl>
+    <p class="r-copy">Bạn có thể đóng tab này và quay lại RISEx để xem trạng thái nạp tiền.</p>
+    <button class="download r-btn" id="backBtn">Quay lại RISEx</button>
+  </section>
+
+  <!-- Order missing / reset (prototype-only) -->
+  <section class="card result-card" id="viewGone" hidden>
+    <h1>Không tìm thấy đơn hàng demo</h1>
+    <p class="r-copy">Đơn hàng này đã được đặt lại hoặc chưa được tạo. Hãy quay lại tab RISEx và bắt đầu lại luồng nạp tiền.</p>
+    <a class="download r-btn" href="index.html">Mở RISEx demo</a>
+  </section>
+
+  <div class="secure"><i data-icon="shield-check" class="i16"></i>Thanh toán trực tuyến an toàn</div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<!-- Prototype controls — not part of the TopPay page -->
+<aside class="demo" aria-label="Prototype controls">
+  <div class="demo-head"><span class="demo-tag">PROTOTYPE CONTROLS</span><span>not part of TopPay</span></div>
+  <button class="demo-btn" id="simBtn"><span class="btn-label">Simulate successful payment</span></button>
+  <p class="demo-note">No money moves. Marks this demo order as paid so the RISEx tab can update.</p>
+</aside>
+
+<script src="assets/icons.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/toppay.js"></script>
+</body>
+</html>

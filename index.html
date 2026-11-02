@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RISEx — Trade BTC</title>
+<meta name="description" content="Interactive desktop prototype of the RISEx on-ramp (regular user, Bank Transfer via Crossmint). Demo only — no real payments.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/brand/logo-small.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="assets/risex.css">
+</head>
+<body>
+<div class="app" id="app">
+  <!-- ============ Header ============ -->
+  <header class="hdr">
+    <button class="logo-btn ob" data-ob="Home" aria-label="RISEx home"><img src="assets/brand/logo-small.svg" alt="" width="36" height="36"></button>
+    <nav class="nav" aria-label="Main">
+      <button class="nav-item is-active ob" data-ob="Trade" aria-current="page">Trade</button>
+      <button class="nav-item ob" data-ob="Portfolio">Portfolio</button>
+      <button class="nav-item ob" data-ob="Points">Points</button>
+      <button class="nav-item ob" data-ob="Referrals">Referrals</button>
+      <button class="nav-item ob" data-ob="Vault">Vault</button>
+      <button class="nav-item ob" data-ob="Quant">Quant</button>
+      <button class="nav-item ob" data-ob="Competition">Competition</button>
+      <button class="nav-item ob" data-ob="Leaderboard">Leaderboard</button>
+      <button class="nav-item ob" data-ob="More">More<i data-icon="chevron-down-20-solid" class="i20"></i></button>
+    </nav>
+    <div class="hdr-spacer"></div>
+    <div class="hdr-actions">
+      <div class="chip"><span class="chip-l">Acct. Equity</span><span class="chip-v" data-bind="equity">$23.72</span></div>
+      <div class="chip"><span class="chip-l">Collat. Margin</span><span class="chip-v" data-bind="collat">$23.70</span></div>
+      <button class="icon-btn circle ob" data-ob="Notifications" aria-label="Notifications"><i data-icon="bell" class="i18"></i></button>
+      <button class="icon-btn circle ob" data-ob="Language" aria-label="Language"><i data-icon="language" class="i18"></i></button>
+      <button class="icon-btn circle ob" data-ob="Settings" aria-label="Settings"><i data-icon="cog" class="i18"></i></button>
+      <button class="avatar ob" data-ob="Account menu" aria-label="Account menu"><img src="assets/brand/avatar.png" alt="" width="36" height="36"></button>
+    </div>
+  </header>
+
+  <!-- ============ Workspace ============ -->
+  <main class="ws">
+    <section class="ws-left">
+      <div class="top-row">
+        <div class="panel market">
+          <img src="assets/brand/asset-btc.svg" alt="" width="20" height="20">
+          <button class="market-name ob" data-ob="Market selector">
+            <span class="sym-row"><span class="sym">BTC</span><span class="badge brand">25x</span><i data-icon="chevron-down-outline" class="i16 muted"></i></span>
+            <span class="sym-name">Bitcoin</span>
+          </button>
+          <span class="kbd">⌘K</span>
+          <button class="icon-btn rounded s32 ob" data-ob="Search markets" aria-label="Search markets"><i data-icon="magnifying-glass" class="i18"></i></button>
+        </div>
+        <div class="panel stats">
+          <div class="metric"><span class="m-l u">Mark</span><span class="m-v">77,381.5</span></div>
+          <div class="metric"><span class="m-l u">Index</span><span class="m-v">77,379.4</span></div>
+          <div class="metric"><span class="m-l">24h Change</span><span class="m-v err">-$193.8 (-0.25%)</span></div>
+          <div class="metric"><span class="m-l">24h Volume</span><span class="m-v">40,518,853.995</span></div>
+          <div class="metric"><span class="m-l u">Open Interest</span><span class="m-v">$17,525,999</span></div>
+          <div class="metric"><span class="m-l u">Funding (1h) / Next Funding</span><span class="m-v brand">0.000576% | 18:32</span></div>
+        </div>
+      </div>
+      <div class="mid-row">
+        <div class="panel chart">
+          <div class="chart-toolbar">
+            <div class="intervals" role="group" aria-label="Chart interval">
+              <button class="tf ob" data-ob="1m">1m</button><button class="tf ob" data-ob="5m">5m</button><button class="tf ob" data-ob="15m">15m</button><button class="tf ob" data-ob="30m">30m</button><button class="tf is-active ob" data-ob="1h" aria-pressed="true">1h</button><button class="tf ob" data-ob="4h">4h</button><button class="tf ob" data-ob="1D">1D</button><button class="tf ob" data-ob="1W">1W</button>
+              <button class="tf tf-more ob" data-ob="More intervals" aria-label="More intervals"><i data-icon="chevron-down-stroke2" class="i12"></i></button>
+            </div>
+            <div class="tools">
+              <button class="tool ob" data-ob="Chart type" aria-label="Chart type"><i data-icon="chart-candles" class="i20"></i></button>
+              <button class="tool ob" data-ob="Indicators" aria-label="Indicators"><i data-icon="chart-indicators" class="i20"></i></button>
+              <button class="tool ob" data-ob="Fullscreen" aria-label="Fullscreen"><i data-icon="arrows-pointing-out" class="i20"></i></button>
+              <button class="tool ob" data-ob="Screenshot" aria-label="Screenshot"><i data-icon="camera" class="i20"></i></button>
+              <button class="tool ob" data-ob="Chart settings" aria-label="Chart settings"><i data-icon="cog-stroke2" class="i20"></i></button>
+              <button class="tool ob" data-ob="Reset chart" aria-label="Reset chart"><i data-icon="arrow-path" class="i20"></i></button>
+            </div>
+            <div class="flex1"></div>
+            <button class="oct ob" data-ob="One-click Trading" role="switch" aria-checked="false"><i data-icon="bolt-outline" class="i14"></i><span>One-click Trading</span><span class="switch"><span class="knob"></span></span></button>
+          </div>
+          <div class="chart-canvas">
+            <img src="assets/brand/chart@2x.png" alt="BTC 1h candlestick chart (static image)" draggable="false">
+          </div>
+        </div>
+        <div class="panel ob-panel">
+          <div class="tabs">
+            <button class="tab is-active ob" data-ob="Orderbook">Orderbook</button>
+            <button class="tab ob" data-ob="Trades">Trade</button>
+          </div>
+          <div class="ob-controls">
+            <div class="ob-views">
+              <button class="mini ob" data-ob="Orderbook view" aria-label="Both sides"><i data-icon="order-book-default" class="i16"></i></button>
+              <button class="mini ob" data-ob="Orderbook view" aria-label="Bids only"><i data-icon="order-book-bid" class="i16"></i></button>
+              <button class="mini ob" data-ob="Orderbook view" aria-label="Asks only"><i data-icon="order-book-ask" class="i16"></i></button>
+            </div>
+            <div class="flex1"></div>
+            <i data-icon="bolt-solid" class="i18"></i>
+            <button class="inline-select ob" data-ob="Price grouping">1<i data-icon="chevron-down-stroke2" class="i18"></i></button>
+            <button class="inline-select ob" data-ob="Size unit">USDC<i data-icon="arrows-right-left" class="i18"></i></button>
+          </div>
+          <div class="ob-head"><span>Price</span><span class="r">Size</span><span class="r">Total</span></div>
+          <div class="ob-rows asks" id="asks"></div>
+          <div class="ob-mid"><span class="mid-px">77,384.5</span><span class="flex1"></span><span class="spread">0.1bps</span><i data-icon="arrows-right-left-16" class="i16"></i></div>
+          <div class="ob-rows bids" id="bids"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="ws-right">
+      <div class="panel order-form">
+        <div class="row g8">
+          <button class="select-trigger ob" data-ob="Margin mode">Cross<i data-icon="chevron-down-stroke2" class="i18"></i></button>
+          <button class="select-trigger ob" data-ob="Leverage">2x<i data-icon="chevron-down-stroke2" class="i18"></i></button>
+        </div>
+        <div class="tabs order-tabs">
+          <button class="tab ob" data-ob="Market order">Market</button>
+          <button class="tab is-active ob" data-ob="Limit order">Limit</button>
+          <button class="tab ob" data-ob="Advanced orders">Advanced<i data-icon="chevron-down-stroke2" class="i16"></i></button>
+        </div>
+        <div class="stat-row"><span class="s-l">Available Balance</span><span class="s-v white" data-bind="available">15.09 USDC</span></div>
+        <div class="col g8">
+          <label class="amount-field ob-field" data-ob="Price"><span class="f-l">Price (USDC)</span><span class="f-v">77,384.4</span><span class="f-a">Mid</span></label>
+          <label class="amount-field ob-field" data-ob="Size"><span class="f-l">Size</span><span class="f-v placeholder">0.0</span><span class="f-unit">BTC<i data-icon="arrows-right-left-16" class="i16"></i></span></label>
+          <div class="row g8 slider-row">
+            <div class="slider ob-field" data-ob="Size slider"><span class="track"></span><span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:100%"></span><span class="handle"></span></div>
+            <div class="pct-field ob-field" data-ob="Size percent"><span class="pv">0</span><span>%</span></div>
+          </div>
+        </div>
+        <div class="row g12 opts">
+          <button class="cb-row ob" data-ob="Post-only" role="checkbox" aria-checked="false"><span class="cb"></span>Post-only</button>
+          <button class="cb-row ob" data-ob="Reduce-only" role="checkbox" aria-checked="false"><span class="cb"></span>Reduce-only</button>
+          <span class="flex1"></span>
+          <button class="inline-select tif ob" data-ob="Time in force"><span class="u">TIF</span><i data-icon="chevron-down-stroke2" class="i18"></i></button>
+        </div>
+        <div class="row g8">
+          <button class="btn buy md ob" data-ob="Buy">Buy</button>
+          <button class="btn sell md ob" data-ob="Sell">Sell</button>
+        </div>
+        <div class="col g10 estimates">
+          <div class="row"><div class="stack"><span>Est. Liq. Price</span><b>-</b></div><div class="stack r"><span>Est. Liq. Price</span><b>-</b></div></div>
+          <div class="row"><div class="stack"><span>Margin Required</span><b>-</b></div><div class="stack r"><span>Margin Required</span><b>-</b></div></div>
+        </div>
+      </div>
+      <div class="panel account">
+        <div class="row g8">
+          <button class="btn deposit sm" id="depositBtn" aria-haspopup="dialog">Deposit</button>
+          <button class="btn secondary sm ob" data-ob="Withdraw">Withdraw</button>
+        </div>
+        <div class="col g8">
+          <div class="stat-row"><span class="s-l">Account Equity</span><span class="s-v" data-bind="equity">$23.72</span></div>
+          <div class="stat-row"><span class="s-l">Unrealized PnL</span><span class="s-v">$0.02</span></div>
+        </div>
+        <div class="col g8">
+          <div class="stat-row"><span class="s-l">Account Leverage</span><span class="s-v" data-bind="leverage">0.73x</span></div>
+          <div class="stat-row"><span class="s-l">Maintenance Margin</span><span class="s-v">-</span></div>
+          <div class="stat-row"><span class="s-l">Margin Usage</span><span class="s-v">0.00%</span></div>
+          <div class="stat-row"><span class="s-l">Liquidation Risk</span><span class="s-v">0.00%</span></div>
+          <div class="risk-meter" id="risk" aria-hidden="true"></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ============ Footer ============ -->
+  <footer class="ftr">
+    <button class="ftr-logo ob" data-ob="Home" aria-label="RISEx"><img src="assets/brand/logo-small.svg" alt="" width="16" height="16"></button>
+    <span class="sys"><span class="dot"><span class="ping"></span></span>System Status</span>
+    <div class="ticker" id="ticker"></div>
+    <div class="ftr-links">
+      <button class="icon-btn s28 ob" data-ob="Discord" aria-label="Discord"><i data-icon="discord" class="i18"></i></button>
+      <button class="icon-btn s28 ob" data-ob="API reference" aria-label="API reference"><i data-icon="code-bracket" class="i18"></i></button>
+      <button class="icon-btn s28 ob" data-ob="Security policy" aria-label="Security policy"><i data-icon="shield" class="i18"></i></button>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ Modal layer ============ -->
+<div class="layer" id="layer" hidden>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- 02 / 03 · Deposit USDC (Perps) -->
+  <div class="modal deposit-modal" id="depositModal" role="dialog" aria-modal="true" aria-labelledby="depTitle" hidden>
+    <div class="modal-header">
+      <h2 id="depTitle">Deposit USDC (Perps)</h2>
+      <button class="icon-btn rounded s28 ghost" data-action="close" aria-label="Close"><i data-icon="x-mark" class="i18"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="seg" role="tablist" aria-label="Deposit source">
+        <span class="seg-pill" aria-hidden="true"></span>
+        <button class="seg-item" role="tab" id="tabCrypto" aria-selected="true" aria-controls="paneCrypto" data-tab="crypto"><i data-icon="cube" class="i16"></i>Use Crypto</button>
+        <button class="seg-item" role="tab" id="tabCash" aria-selected="false" aria-controls="paneCash" data-tab="cash" tabindex="-1"><i data-icon="currency-dollar" class="i16"></i>Use Cash</button>
+      </div>
+      <div class="panes">
+        <div class="pane" id="paneCrypto" role="tabpanel" aria-labelledby="tabCrypto">
+          <div class="group"><div class="group-l">Connected</div>
+            <button class="option ob" data-ob="Wallet deposit"><span class="o-ic"><img src="assets/brand/brand-metamask.png" alt="" width="20" height="20"></span><span class="o-tx"><b>Wallet (...035a)</b><small>$22.06 • Instant</small></span></button>
+          </div>
+          <div class="group"><div class="group-l">More options</div>
+            <button class="option ob" data-ob="Transfer Crypto"><span class="o-ic"><i data-icon="qr-code" class="i20"></i></span><span class="o-tx"><b>Transfer Crypto</b><small>No limit • Instant</small></span><img class="o-logos" src="assets/brand/brand-chain-logos-strip.png" alt="Supported chains" width="118" height="17"></button>
+            <button class="option ob" data-ob="Connect Exchange"><span class="o-ic"><i data-icon="link" class="i20"></i></span><span class="o-tx"><b>Connect Exchange</b><small>No limit • 2 min</small></span><img class="o-logos" src="assets/brand/brand-exchange-logos-strip.png" alt="Supported exchanges" width="118" height="17"></button>
+          </div>
+        </div>
+        <div class="pane" id="paneCash" role="tabpanel" aria-labelledby="tabCash" hidden>
+          <div class="group"><div class="group-l">Most popular</div>
+            <button class="option ob" data-ob="VIETQR"><span class="o-ic"><i data-icon="qr-code" class="i20"></i></span><span class="o-tx"><b>VIETQR</b><small>$4k limit • Instant</small></span></button>
+          </div>
+          <div class="group"><div class="group-l">More options</div>
+            <button class="option" id="optBank"><span class="o-ic"><i data-icon="building-library" class="i20"></i></span><span class="o-tx"><b>Bank Transfer</b><small>$4k limit • 1-2 business days</small></span></button>
+            <button class="option ob" data-ob="Credit Card"><span class="o-ic"><i data-icon="credit-card" class="i20"></i></span><span class="o-tx"><b>Credit Card</b><small>$4k limit • Instant</small></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 – 07 · Crossmint widget -->
+  <div class="modal widget" id="widget" role="dialog" aria-modal="true" aria-labelledby="widgetTitle" hidden>
+    <div class="topup" id="topup">
+      <div class="w-header">
+        <button class="icon-btn rounded s28 ghost" data-action="back" aria-label="Back"><i data-icon="chevron-left" class="i18"></i></button>
+        <span class="w-gap"></span>
+        <h2 class="w-title" id="widgetTitle">Top up</h2>
+        <button class="icon-btn rounded s28 ghost ob" data-ob="Widget menu" aria-label="More options"><i data-icon="ellipsis-horizontal" class="i18"></i></button>
+        <button class="icon-btn rounded s28 ghost" data-action="close" aria-label="Close"><i data-icon="x-mark" class="i18"></i></button>
+      </div>
+      <div class="total-l">Total</div>
+      <div class="amount-row">
+        <span class="amount-wrap"><input id="amount" class="amount-input" inputmode="numeric" autocomplete="off" spellcheck="false" aria-label="Amount in VND" aria-describedby="amountHelp" value="2.580.313"><span class="amount-mirror" id="amountMirror" aria-hidden="true"></span></span>
+        <span class="amount-caret" aria-hidden="true"></span>
+        <button class="currency ob" data-ob="Currency selector" aria-label="Currency: VND">VND<i data-icon="chevron-down" class="i16"></i></button>
+      </div>
+      <div class="converts"><span>to</span><img src="assets/brand/asset-usdc.svg" alt="" width="16" height="16"><b>USDC</b></div>
+      <div class="amount-help" id="amountHelp" aria-live="polite"></div>
+      <div class="quick" role="group" aria-label="Quick amounts">
+        <button class="btn secondary md" data-usd="25">$25</button>
+        <button class="btn secondary md" data-usd="50">$50</button>
+        <button class="btn secondary md" data-usd="100">$100</button>
+        <button class="btn secondary md" data-usd="200">$200</button>
+      </div>
+      <div class="fees">
+        <div class="fee-row"><span>Processing fee</span><button class="info ob" data-ob="Processing fee info" aria-label="About processing fee"><i data-icon="information-circle" class="i14"></i></button><span class="flex1"></span><b>- 0 VND</b></div>
+        <div class="fee-row"><span>Network fee</span><button class="info ob" data-ob="Network fee info" aria-label="About network fee"><i data-icon="information-circle" class="i14"></i></button><span class="flex1"></span><b>- 0 VND</b></div>
+      </div>
+      <div class="flex1 topup-spacer"></div>
+      <button class="btn buy md wide" id="continueBtn">Continue</button>
+      <div class="powered"><span>Powered by</span><img src="assets/brand/brand-crossmint-wordmark-on-dark-.png" alt="crossmint" width="72" height="16"></div>
+    </div>
+    <div class="scrim" id="scrim"></div>
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet-inner" id="sheetInner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Sheet templates -->
+<template id="tplLogin">
+  <div class="sheet-view" data-view="login">
+    <div class="s-header">
+      <button class="icon-btn rounded s28 ghost" data-action="collapse" aria-label="Collapse"><i data-icon="chevron-down" class="i18"></i></button>
+      <h3 class="s-title">Login/ Sign up</h3>
+      <button class="icon-btn rounded s28 ghost chat ob" data-ob="Support chat" aria-label="Support chat"><i data-icon="chat-bubble" class="i18"></i><span class="unread"></span></button>
+    </div>
+    <p class="s-copy">Welcome to Crossmint! Enter your email address, and we'll send you a secure verification code to continue.</p>
+    <label class="email-field ob-field" data-ob="Email sign-in"><span class="fake-caret" aria-hidden="true"></span><input type="email" readonly placeholder="john@email.com" aria-label="Email (not part of this demo)" tabindex="-1"></label>
+    <div class="or"><span></span>or<span></span></div>
+    <button class="btn secondary md wide" id="googleBtn"><span class="btn-label">Google</span><i data-icon="google" class="i20"></i></button>
+    <button class="btn disabled md wide" disabled aria-disabled="true">Tiếp tục</button>
+    <div class="powered"><span>Powered by</span><img src="assets/brand/brand-crossmint-wordmark-on-dark-.png" alt="crossmint" width="72" height="16"></div>
+  </div>
+</template>
+
+<template id="tplPay">
+  <div class="sheet-view" data-view="pay">
+    <div class="s-header">
+      <button class="icon-btn rounded s28 ghost" data-action="collapse" aria-label="Collapse"><i data-icon="chevron-down" class="i18"></i></button>
+      <h3 class="s-title">Pay with Bank Account</h3>
+      <button class="icon-btn rounded s28 ghost chat ob" data-ob="Support chat" aria-label="Support chat"><i data-icon="chat-bubble" class="i18"></i><span class="unread"></span></button>
+    </div>
+    <div class="summary">
+      <div class="col g4"><span class="muted14">Deposit to:</span><b class="m14">RISEx</b></div>
+      <div class="col g4 r"><span class="muted14">Total</span><b class="sb16" data-bind="vndTotal">₫ 2.580.313</b></div>
+    </div>
+    <p class="terms">By proceeding with the payment, you agree to Crossmint's Terms of Service.</p>
+    <button class="text-link ob" data-ob="Terms of Service (external)">Terms of Service<i data-icon="arrow-top-right-on-square" class="i14"></i></button>
+    <button class="btn buy md wide" id="payBtn"><span class="btn-label">Pay with Bank Account</span></button>
+  </div>
+</template>
+
+<template id="tplConfirm">
+  <div class="sheet-view" data-view="confirm">
+    <div class="s-header">
+      <button class="icon-btn rounded s28 ghost" data-action="collapse" aria-label="Collapse"><i data-icon="chevron-down" class="i18"></i></button>
+      <h3 class="s-title">Confirm Order</h3>
+      <button class="icon-btn rounded s28 ghost chat ob" data-ob="Support chat" aria-label="Support chat"><i data-icon="chat-bubble" class="i18"></i><span class="unread"></span></button>
+    </div>
+    <div class="os-head">
+      <span class="os-title">Order Status</span>
+      <span class="flex1"></span>
+      <button class="icon-btn rounded s28 ghost ob" data-ob="Previous page" aria-label="Previous"><i data-icon="chevron-left" class="i18"></i></button>
+      <button class="icon-btn rounded s28 ghost ob" data-ob="Next page" aria-label="Next"><i data-icon="chevron-right" class="i18"></i></button>
+    </div>
+    <ol class="steps" aria-live="polite">
+      <li class="step" data-step="created"><span class="st-l">Order Created</span><span class="ind"></span><span class="vh st-s"></span></li>
+      <li class="conn" aria-hidden="true"></li>
+      <li class="step" data-step="payment"><span class="st-l">Awaiting Payment</span><span class="ind"></span><span class="vh st-s"></span></li>
+      <li class="conn" aria-hidden="true"></li>
+      <li class="step" data-step="sent"><span class="st-l">Your USDC Has Been Sent</span><span class="ind"></span><span class="vh st-s"></span></li>
+    </ol>
+    <div class="confirm-foot" data-part="pending">
+      <div class="pager" aria-hidden="true"><span class="on"></span><span></span></div>
+      <button class="link-u" id="reopenLink">Payment Link Not Opening?</button>
+      <div class="powered"><span>Powered by</span><img src="assets/brand/brand-crossmint-wordmark-on-dark-.png" alt="crossmint" width="72" height="16"></div>
+    </div>
+    <div class="confirm-foot result" data-part="done" hidden>
+      <div class="result-msg" role="status">
+        <span class="result-ic" aria-hidden="true"></span>
+        <div><b>Deposit complete</b><span data-bind="resultCopy">100.00 USDC has been added to your RISEx Perps balance.</span></div>
+      </div>
+      <button class="btn buy md wide" id="backToTrade">Back to Trade</button>
+      <div class="powered"><span>Powered by</span><img src="assets/brand/brand-crossmint-wordmark-on-dark-.png" alt="crossmint" width="72" height="16"></div>
+    </div>
+  </div>
+</template>
+
+<!-- Feedback toast (product) -->
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<!-- Prototype controls — not part of the product UI -->
+<aside class="demo" id="demo" aria-label="Prototype controls">
+  <span class="demo-tag">PROTOTYPE</span>
+  <span class="demo-step" id="demoStep">01 · Trade</span>
+  <button class="demo-btn" id="restartBtn">Restart demo</button>
+</aside>
+
+<script src="assets/icons.js"></script>
+<script src="assets/store.js"></script>
+<script src="assets/risex.js"></script>
+</body>
+</html>
