@@ -231,6 +231,16 @@ button { transition: background-color var(--t-fast) ease, color var(--t-fast) ea
 .btn.secondary.is-loading > i { opacity: 0; }
 .btn.deposit { flex: 1; color: var(--text-brand); border: 1px solid transparent; background: linear-gradient(var(--bg-primary), var(--bg-primary)) padding-box, linear-gradient(100deg, #03de82 0%, #ffffff 47%, #017846 100%) border-box; }
 .btn.deposit:hover { background: linear-gradient(#0f1a16, #0f1a16) padding-box, linear-gradient(100deg, #03de82 0%, #ffffff 47%, #017846 100%) border-box; box-shadow: 0 0 0 3px rgba(3, 222, 130, .12); }
+/* Attention cue: a light streak travels once around the border, then rests (prototype-only addition) */
+@property --sweep { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+.btn.deposit::before, .btn.deposit::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--sweep), transparent 0 62%, rgba(3, 222, 130, .5) 78%, #8bf0c6 90%, #ffffff 94%, #03de82 97%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: depositSweep 4.2s cubic-bezier(.45, .05, .55, .95) 1.2s infinite both; }
+.btn.deposit::after { inset: -3px; padding: 3px; filter: blur(4px); opacity: 0; animation-name: depositGlow; }
+@keyframes depositSweep { 0% { --sweep: 0deg; opacity: 0; } 6% { opacity: 1; } 52% { opacity: 1; } 58% { --sweep: 360deg; opacity: 0; } 100% { --sweep: 360deg; opacity: 0; } }
+@keyframes depositGlow { 0% { --sweep: 0deg; opacity: 0; } 6% { opacity: .7; } 52% { opacity: .7; } 58% { --sweep: 360deg; opacity: 0; } 100% { --sweep: 360deg; opacity: 0; } }
+.btn.deposit:hover::before, .btn.deposit:hover::after, .btn.deposit:focus-visible::before, .btn.deposit:focus-visible::after { animation: none; opacity: 0; }
 .account .btn.secondary.sm { flex: 1; }
 
 .estimates .row { justify-content: space-between; }
@@ -438,7 +448,8 @@ button { transition: background-color var(--t-fast) ease, color var(--t-fast) ea
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
   .step[data-state="active"] .ind::after, .btn.is-loading::after { animation: spin 1.6s linear infinite !important; }
-  .amount-caret, .fake-caret { animation: none !important; }
+  .amount-caret, .fake-caret, .btn.deposit::before, .btn.deposit::after { animation: none !important; }
+  .btn.deposit::before, .btn.deposit::after { opacity: 0; }
   .sys .ping { display: none; }
   button:not(:disabled):active { transform: none; }
 }
