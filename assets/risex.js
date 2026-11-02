@@ -80,12 +80,13 @@
   var STEPS = {
     trade: '01 · Trade — click Deposit', crypto: '02 · Use Crypto — switch to Use Cash', cash: '03 · Use Cash — choose Bank Transfer',
     topup: '04 · Top up — Continue', login: '05 · Login — continue with Google', pay: '06 · Pay with Bank Account',
-    pending: '07 · Pending — pay in the TopPay tab', paid: '07 · Payment received', done: 'Done — Back to Trade', after: 'Deposit complete · Restart to replay'
+    pending: '07 · Pending — pay in the TopPay tab', paid: '07 · Paid — return to this tab', confirming: '07 · Confirming payment…', done: 'Success — Back to Trade', after: 'Deposit complete · Restart to replay'
   };
   function stepLabel(k) { $('#demoStep').textContent = STEPS[k] || ''; }
 
   /* ---------------- modal layer ---------------- */
-  var layer = $('#layer'), app = $('#app'), depModal = $('#depositModal'), widget = $('#widget');
+  var layer = $('#layer'), app = $('#app'), depModal = $('#depositModal'), widget = $('#widget'), succModal = $('#successModal');
+  var MODALS = [depModal, widget, succModal];
   var current = null, lastFocus = null;
 
   function openLayer() {
@@ -96,25 +97,25 @@
   }
   function closeLayer() {
     layer.classList.remove('is-open');
-    [depModal, widget].forEach(function (m) { if (!m.hidden) { m.classList.remove('is-in'); m.classList.add('is-out'); } });
+    MODALS.forEach(function (m) { if (!m.hidden) { m.classList.remove('is-in'); m.classList.add('is-out'); } });
     setTimeout(function () {
       layer.hidden = true; app.inert = false;
-      [depModal, widget].forEach(function (m) { m.hidden = true; m.classList.remove('is-out'); });
+      MODALS.forEach(function (m) { m.hidden = true; m.classList.remove('is-out'); });
       resetWidget();
       current = null; stepLabel(isComplete() ? 'after' : 'trade');
       if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
     }, reduced ? 10 : 240);
   }
   function swapTo(modal, focusEl) {
-    var other = modal === depModal ? widget : depModal;
-    if (!other.hidden) {
+    var leaving = MODALS.filter(function (m) { return m !== modal && !m.hidden; });
+    leaving.forEach(function (other) {
       other.classList.remove('is-in'); other.classList.add('is-out');
       setTimeout(function () { other.hidden = true; other.classList.remove('is-out'); }, reduced ? 10 : 160);
-    }
+    });
     if (modal.hidden) {
       modal.hidden = false; modal.classList.remove('is-out');
       void modal.offsetWidth;
-      setTimeout(function () { modal.classList.add('is-in'); }, other.hidden ? 0 : 70);
+      setTimeout(function () { modal.classList.add('is-in'); }, leaving.length ? (reduced ? 20 : 120) : 0);
     }
     if (focusEl) setTimeout(function () { focusEl.focus({ preventScroll: true }); }, 30);
   }
@@ -293,7 +294,6 @@
         var w = openProvider(flow.orderId);
         toast(w ? 'TopPay payment page reopened in a new tab' : 'Pop-up blocked — allow pop-ups for this site and try again');
       });
-      $('#backToTrade', node).addEventListener('click', function () { acknowledge(); closeLayer(); });
     }
   };
   function setStep(name, state) {
@@ -317,39 +317,71 @@
     return w;
   }
 
-  /* ---------------- completion (prototype-only addition) ---------------- */
+  /* ---------------- completion (prototype-only addition) ----------------
+     Payment is simulated in the TopPay tab. If that tab is in front, the result
+     is only stored; the steps play here once the user is back on this tab. */
   var completing = false;
-  function whenVisible() {
+  // holds between steps: short but readable; reduced motion keeps the order, drops the movement
+  var HOLD = reduced ? { pre: 500, pay: 450, sent: 800, post: 450 } : { pre: 650, pay: 500, sent: 1300, post: 650 };
+  var pause = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  function userIsHere() { return !document.hidden && document.hasFocus(); }
+  function whenUserIsHere() {
     return new Promise(function (res) {
-      if (!document.hidden) return res();
-      document.addEventListener('visibilitychange', function h() { if (!document.hidden) { document.removeEventListener('visibilitychange', h); res(); } });
+      if (userIsHere()) return res();
+      function check(e) {
+        if (document.hidden) return;
+        if (document.hasFocus() || (e && e.type === 'pointermove')) { off(); res(); }
+      }
+      function off() { ['visibilitychange', 'focus', 'pointermove'].forEach(function (t) { (t === 'visibilitychange' ? document : window).removeEventListener(t, check); }); }
+      document.addEventListener('visibilitychange', check);
+      window.addEventListener('focus', check);
+      window.addEventListener('pointermove', check);
     });
   }
   function complete() {
     if (completing) return; completing = true;
     stepLabel('paid');
-    whenVisible().then(function () { return wait(350); }).then(function () {
-      setStep('payment', 'done');
-      return wait(300);
+    whenUserIsHere().then(function () {
+      stepLabel('confirming');
+      return pause(HOLD.pre);                 // user sees "Awaiting Payment" still spinning…
+    }).then(function () {
+      setStep('payment', 'done');             // …then it completes
+      return pause(HOLD.pay);
     }).then(function () {
       setStep('sent', 'active');
-      return wait(1500);
+      return pause(HOLD.sent);
     }).then(function () {
-      var s = S.update(function (st) { if (st.order && st.order.status !== 'complete') { st.deposited = Math.round((st.deposited + st.order.usdc) * 100) / 100; st.order.status = 'complete'; } });
+      var s = credit();
       setStep('sent', 'done');
-      showResult(s.order);
+      return pause(HOLD.post).then(function () { return s; });
+    }).then(function (s) {
       completing = false;
+      if (s.order && s.order.id === flow.orderId) showSuccess(s.order, s.deposited);
     });
   }
-  function showResult(order) {
-    stepLabel('done');
-    resizeSheet(function () {
-      var pend = $('[data-part="pending"]', inner), done = $('[data-part="done"]', inner);
-      pend.hidden = true; done.hidden = false;
-      $('[data-bind="resultCopy"]', done).textContent = S.fmtUsdc(order.usdc) + ' USDC has been added to your RISEx Perps balance.';
-      done.classList.add('sheet-view', 'is-entering');
+  // Adds the order's USDC to the balance exactly once, whichever tab or reload gets here first.
+  function credit() {
+    return S.update(function (st) {
+      if (st.order && st.order.id === flow.orderId && st.order.status !== 'complete') {
+        st.deposited = Math.round((st.deposited + st.order.usdc) * 100) / 100;
+        st.order.status = 'complete';
+      }
     });
-    focusFirst(inner, '#backToTrade');
+  }
+  function showSuccess(order, deposited) {
+    S.update(function (st) { if (st.order && st.order.id === order.id) st.order.successShown = true; });
+    $('[data-succ="usdc"]').textContent = '+' + S.fmtUsdc(order.usdc);
+    $('[data-succ="vnd"]').textContent = S.fmtVndDots(order.vnd) + ' VND';
+    $('[data-succ="received"]').textContent = S.fmtUsdc(order.usdc) + ' USDC';
+    $('[data-succ="balance"]').textContent = S.fmtUsdc(D.base.available + deposited) + ' USDC';
+    openLayer();
+    current = 'success'; stepLabel('done');
+    swapTo(succModal, $('#backToTrade'));
+  }
+  function finish() {
+    if (current !== 'success') return;
+    current = 'closing';
+    acknowledge(); closeLayer();
   }
   function acknowledge() {
     var s = S.update(function (st) { if (st.order) st.order.ack = true; });
@@ -375,6 +407,7 @@
     if (!a) return;
     var act = a.getAttribute('data-action');
     if (act === 'close') closeLayer();
+    else if (act === 'finish') finish();
     else if (act === 'back') { showDeposit('cash'); }
     else if (act === 'collapse') {
       if (current === 'confirm') { nudge(a); toast('Order in progress — finish the payment in the TopPay tab'); }
@@ -389,10 +422,11 @@
     if (e.key === 'Escape') {
       if (current === 'crypto' || current === 'cash' || current === 'topup') closeLayer();
       else if (current === 'login' || current === 'pay') setWidgetState('topup');
+      else if (current === 'success') finish();
       else toast('Order in progress — finish the payment in the TopPay tab');
     }
     if (e.key === 'Tab') { // keep focus inside the open dialog
-      var m = !widget.hidden ? widget : depModal;
+      var m = MODALS.filter(function (x) { return !x.hidden && !x.classList.contains('is-out'); }).pop() || depModal;
       var f = $$('button:not([disabled]), input:not([tabindex="-1"]), [tabindex="0"]', m).filter(function (el) { return el.offsetParent !== null && !el.closest('[inert]'); });
       if (!f.length) return;
       var i = f.indexOf(document.activeElement);
@@ -417,14 +451,22 @@
   stepLabel(st.order && st.order.status === 'complete' ? 'after' : 'trade');
   try { if (sessionStorage.getItem('risex-demo-restarted')) { sessionStorage.removeItem('risex-demo-restarted'); setTimeout(function () { toast('Demo restarted'); }, 300); } } catch (e) {}
 
-  // A refresh mid-payment returns to the same order instead of a blank or stale screen.
+  // A refresh returns to the same order instead of a blank or stale screen:
+  // pending → pending; paid → plays the remaining steps; finished and already seen → Trade, credited once.
   if (st.order && !st.order.ack) {
-    flow.orderId = st.order.id; flow.vnd = st.order.vnd; flow.signedIn = true;
-    if (st.order.status === 'complete') { shown = st.deposited - st.order.usdc; paintBalances(shown); }
-    showWidget('confirm');
-    setStep('created', 'done');
-    if (st.order.status === 'pending') setStep('payment', 'active'), setStep('sent', 'idle');
-    else if (st.order.status === 'paid') { setStep('payment', 'active'); setStep('sent', 'idle'); complete(); }
-    else { setStep('payment', 'done'); setStep('sent', 'done'); showResult(st.order); }
+    flow.signedIn = true;
+    if (st.order.status === 'complete' && st.order.successShown) {
+      shown = st.deposited - st.order.usdc; paintBalances(shown);
+      acknowledge(); // the next deposit starts fresh from the default amount
+    } else if (st.order.status === 'complete') {
+      flow.orderId = st.order.id; flow.vnd = st.order.vnd;
+      shown = st.deposited - st.order.usdc; paintBalances(shown);
+      showSuccess(st.order, st.deposited);
+    } else {
+      flow.orderId = st.order.id; flow.vnd = st.order.vnd;
+      showWidget('confirm');
+      setStep('created', 'done'); setStep('payment', 'active'); setStep('sent', 'idle');
+      if (st.order.status === 'paid') complete();
+    }
   }
 })();

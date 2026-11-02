@@ -249,6 +249,25 @@
       <div class="sheet-inner" id="sheetInner"></div>
     </div>
   </div>
+  <!-- Deposit successful — prototype-only addition (not in Figma), built from the RISEx modal styles -->
+  <div class="modal success-modal" id="successModal" role="dialog" aria-modal="true" aria-labelledby="succTitle" aria-describedby="succCopy" hidden>
+    <button class="icon-btn rounded s28 ghost succ-close" data-action="finish" aria-label="Close"><i data-icon="x-mark" class="i18"></i></button>
+    <div class="succ-hero">
+      <span class="succ-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28"><path d="M6 12.5l4 4L18.5 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <h2 id="succTitle">Deposit successful</h2>
+      <p id="succCopy">Your USDC has arrived in your RISEx Perps account.</p>
+    </div>
+    <div class="succ-amount"><span class="succ-plus" data-succ="usdc">+100.00</span><span class="succ-unit"><img src="assets/brand/asset-usdc.svg" alt="" width="20" height="20">USDC</span></div>
+    <dl class="succ-rows">
+      <div><dt>You paid</dt><dd data-succ="vnd">2.580.313 VND</dd></div>
+      <div><dt>Fees</dt><dd>0 VND</dd></div>
+      <div><dt>You received</dt><dd data-succ="received">100.00 USDC</dd></div>
+      <div><dt>Deposited to</dt><dd>RISEx Perps</dd></div>
+      <div><dt>Payment method</dt><dd>Bank Transfer</dd></div>
+      <div class="succ-sep"><dt>Available balance</dt><dd class="brand" data-succ="balance">115.09 USDC</dd></div>
+    </dl>
+    <button class="btn buy md wide" id="backToTrade" data-action="finish">Back to Trade</button>
+  </div>
 </div>
 
 <!-- Sheet templates -->
@@ -305,17 +324,9 @@
       <li class="conn" aria-hidden="true"></li>
       <li class="step" data-step="sent"><span class="st-l">Your USDC Has Been Sent</span><span class="ind"></span><span class="vh st-s"></span></li>
     </ol>
-    <div class="confirm-foot" data-part="pending">
+    <div class="confirm-foot">
       <div class="pager" aria-hidden="true"><span class="on"></span><span></span></div>
       <button class="link-u" id="reopenLink">Payment Link Not Opening?</button>
-      <div class="powered"><span>Powered by</span><img src="assets/brand/brand-crossmint-wordmark-on-dark-.png" alt="crossmint" width="72" height="16"></div>
-    </div>
-    <div class="confirm-foot result" data-part="done" hidden>
-      <div class="result-msg" role="status">
-        <span class="result-ic" aria-hidden="true"></span>
-        <div><b>Deposit complete</b><span data-bind="resultCopy">100.00 USDC has been added to your RISEx Perps balance.</span></div>
-      </div>
-      <button class="btn buy md wide" id="backToTrade">Back to Trade</button>
       <div class="powered"><span>Powered by</span><img src="assets/brand/brand-crossmint-wordmark-on-dark-.png" alt="crossmint" width="72" height="16"></div>
     </div>
   </div>

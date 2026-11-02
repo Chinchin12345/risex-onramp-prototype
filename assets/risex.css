@@ -389,15 +389,31 @@ button { transition: background-color var(--t-fast) ease, color var(--t-fast) ea
 .pager span.on { background: var(--text-primary); }
 .link-u { margin-top: 24px; font-size: 14px; line-height: 20px; color: var(--text-secondary); text-decoration: underline; text-underline-offset: 3px; border-radius: 4px; }
 .link-u:hover { color: var(--text-primary); }
-.confirm-foot[data-part="pending"] .powered { margin-top: 38px; }
-.result { align-items: stretch; }
-.result-msg { margin-top: 16px; display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 8px; background: var(--bg-brand); border: 1px solid rgba(3, 222, 130, .25); }
-.result-msg b { display: block; font-weight: 600; font-size: 14px; line-height: 20px; color: var(--text-primary); }
-.result-msg span { color: var(--text-secondary); }
-.result-ic { width: 20px; height: 20px; flex: none; border-radius: 50%; background: var(--bg-brand-solid); position: relative; animation: pop 260ms var(--ease-out); }
-.result-ic::after { content: ""; position: absolute; left: 6px; top: 4px; width: 5px; height: 9px; border: solid var(--text-on-brand); border-width: 0 2.4px 2.4px 0; transform: rotate(45deg); }
-#backToTrade { margin-top: 16px; }
-.result .powered { margin-top: 16px; }
+.confirm-foot .powered { margin-top: 38px; }
+
+/* Deposit successful — separate modal after the three status steps (prototype-only addition) */
+.success-modal { width: 408px; padding: 32px 20px 20px; display: flex; flex-direction: column; align-items: stretch; }
+.succ-close { position: absolute; top: 16px; right: 16px; }
+.succ-hero { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.succ-icon { position: relative; width: 56px; height: 56px; border-radius: 50%; background: var(--bg-brand-solid); color: var(--text-on-brand); display: grid; place-items: center; box-shadow: 0 0 0 8px var(--bg-brand); }
+.succ-icon::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 1px solid rgba(3, 222, 130, .35); }
+.succ-icon path { stroke-dasharray: 24; stroke-dashoffset: 0; }
+.success-modal.is-in .succ-icon { animation: succPop 380ms var(--ease-out) both; }
+.success-modal.is-in .succ-icon path { animation: succDraw 320ms 200ms var(--ease-out) both; }
+@keyframes succPop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes succDraw { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
+.succ-hero h2 { margin-top: 24px; font-weight: 600; font-size: 18px; line-height: 28px; color: var(--text-primary); }
+.succ-hero p { margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--text-secondary); }
+.succ-amount { margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.succ-plus { font-weight: 500; font-size: 40px; line-height: 48px; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.succ-unit { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 24px; line-height: 32px; color: var(--text-primary); }
+.succ-rows { margin: 20px 0 0; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--bg-primary); border: 1px solid var(--border-secondary); border-radius: 8px; }
+.succ-rows div { display: flex; justify-content: space-between; align-items: center; height: 18px; }
+.succ-rows dt { color: var(--text-secondary); }
+.succ-rows dd { margin: 0; font-weight: 500; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.succ-rows dd.brand { font-weight: 600; color: var(--text-brand); }
+.succ-rows .succ-sep { padding-top: 12px; height: 31px; box-shadow: inset 0 1px 0 var(--border-secondary); }
+#backToTrade { margin-top: 20px; }
 
 /* toast */
 .toast { position: fixed; left: 50%; bottom: 44px; z-index: 80; transform: translate(-50%, 8px); opacity: 0; padding: 8px 12px; border-radius: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-primary); color: var(--text-primary); box-shadow: 0 8px 24px rgba(0, 0, 0, .4); font-weight: 500; transition: opacity var(--t-ctrl) ease, transform var(--t-ctrl) var(--ease-out); pointer-events: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
